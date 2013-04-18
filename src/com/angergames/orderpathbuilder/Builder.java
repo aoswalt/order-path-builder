@@ -26,12 +26,17 @@ public class Builder extends JPanel {
 	
 	private HashMap<String, JTextField> fields = new HashMap<String, JTextField>();
 	private int fieldWidth = 8;
-	private JButton findButton = new JButton("Find");
+	private static JButton findButton = new JButton("Find");
+	
+	private FileChecker checker = new FileChecker(fields);
 	
 	public Builder() {
 		setupUI();
 	}
 	
+	/**
+	 * Add elements to the interface.
+	 */
 	private void setupUI() {
 		this.setLayout(new GridBagLayout());
 		
@@ -40,8 +45,7 @@ public class Builder extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				
+				System.out.println(checker.findFile());
 			}
 		});
 		
@@ -133,37 +137,20 @@ public class Builder extends JPanel {
 		c.gridx = 1;
 		c.gridy = 5;
 		this.add(findButton, c);
-		
 	}
 	
+	/**
+	 * Program entry point.
+	 * 
+	 * @param args Not used.
+	 */
 	public static void main(String[] args) {
 		JFrame frame = new JFrame(TITLE);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(new Builder());
 		frame.pack();
+		frame.getRootPane().setDefaultButton(findButton);
 		frame.setVisible(true);
 
 	}
-	
-	/*
-	 * 
-		private static String patternPackage = "\\w+P\\d{1}";
-		private static String patternMinimum = "\\w+M";
-		
-		private static String in = "HTFSTL2MP3";
-		private static String out;
-		
-		out = in.toUpperCase();
-		System.out.println("Input: " + out);
-		
-		if(out.matches(patternPackage)) {
-			out = out.substring(0, out.length() - 2);
-		}
-		
-		if(out.matches(patternMinimum)) {
-			out = out.substring(0, out.length() - 1);
-		}
-		
-		System.out.println("Searched for: " + out);
-	 */
 }
