@@ -149,6 +149,7 @@ public class Builder extends JPanel {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(new Builder());
 		frame.pack();
+		frame.setLocationRelativeTo(null);
 		frame.getRootPane().setDefaultButton(findButton);
 		frame.setVisible(true);
 
