@@ -210,7 +210,7 @@ public class Builder extends JPanel {
 	/**
 	 * Program entry point.
 	 * 
-	 * @param args Not used.
+	 * @param args If supplied with appropriate arguments, runs by command-line. Otherwise, runs with GUI.
 	 */
 	public static void main(String[] args) {
 		if(args.length == 7) {	// if appropriate number of arguments, launch as commandline
@@ -234,6 +234,9 @@ public class Builder extends JPanel {
 		}
 	}
 	
+	/**
+	 * Show error message for config file not found and exit the program.
+	 */
 	public static void closeWithError() {
 		System.err.println("!ERROR: cfg/paths.cfg not found.");
 		JOptionPane.showMessageDialog(null, "Config file not found.", "Missing Config", JOptionPane.ERROR_MESSAGE);
