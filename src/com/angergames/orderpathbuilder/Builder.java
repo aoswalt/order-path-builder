@@ -1,5 +1,6 @@
 package com.angergames.orderpathbuilder;
 
+import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -55,34 +56,52 @@ public class Builder extends JPanel {
 		JLabel label;
 		JTextField field;
 		
-		label = new JLabel("Item: ");
+		label = new JLabel("Item:");
+		c.gridwidth = 1;
+		c.weightx = 0;
+		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.EAST;
 		c.gridx = 0;
 		c.gridy = 0;
 		this.add(label, c);
 		field = new JTextField(fieldWidth);
+		c.gridwidth = 3;
+		c.weightx = 1.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 1;
 		this.add(field, c);
 		fields.put("item", field);
 		
-		label = new JLabel("Size: ");
+		label = new JLabel("Size:");
+		c.gridwidth = 1;
+		c.weightx = 0;
+		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.EAST;
 		c.gridx = 0;
 		c.gridy = 1;
 		this.add(label, c);
 		field = new JTextField(fieldWidth);
+		c.gridwidth = 3;
+		c.weightx = 1.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 1;
 		this.add(field, c);
 		fields.put("size", field);
 		
-		label = new JLabel("Spec: ");
+		label = new JLabel("Spec:");
+		c.gridwidth = 1;
+		c.weightx = 0;
+		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.EAST;
 		c.gridx = 0;
 		c.gridy = 2;
 		this.add(label, c);
 		field = new JTextField(fieldWidth);
+		c.gridwidth = 3;
+		c.weightx = 1.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 1;
 		this.add(field, c);
@@ -90,52 +109,72 @@ public class Builder extends JPanel {
 		
 		
 		//words
-		label = new JLabel("Word1: ");
+		label = new JLabel("Word1:");
+		c.gridwidth = 1;
+		c.weightx = 0;
+		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.EAST;
 		c.gridx = 0;
 		c.gridy = 3;
 		this.add(label, c);
 		field = new JTextField(fieldWidth);
+		c.weightx = 0.5;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 1;
 		this.add(field, c);
 		fields.put("word1", field);
 
-		label = new JLabel("Word2: ");
+		label = new JLabel("Word2:");
+		c.weightx = 0;
+		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.EAST;
 		c.gridx = 0;
 		c.gridy = 4;
 		this.add(label, c);
 		field = new JTextField(fieldWidth);
+		c.weightx = 0.5;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 1;
 		this.add(field, c);
 		fields.put("word2", field);
 
-		label = new JLabel("Word3: ");
+		label = new JLabel("Word3:");
+		c.weightx = 0;
+		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.EAST;
 		c.gridx = 2;
 		c.gridy = 3;
 		this.add(label, c);
 		field = new JTextField(fieldWidth);
+		c.weightx = 0.5;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 3;
 		this.add(field, c);
 		fields.put("word3", field);
 
-		label = new JLabel("Word4: ");
+		label = new JLabel("Word4:");
+		c.weightx = 0;
+		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.EAST;
 		c.gridx = 2;
 		c.gridy = 4;
 		this.add(label, c);
 		field = new JTextField(fieldWidth);
+		c.weightx = 0.5;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 3;
 		this.add(field, c);
 		fields.put("word4", field);
 		
-		c.gridx = 1;
+		c.anchor = GridBagConstraints.CENTER;
+		c.gridx = 0;
 		c.gridy = 5;
+		c.gridwidth = 5;
+		c.fill = GridBagConstraints.NONE;
 		this.add(findButton, c);
 	}
 	
@@ -145,13 +184,19 @@ public class Builder extends JPanel {
 	 * @param args Not used.
 	 */
 	public static void main(String[] args) {
-		JFrame frame = new JFrame(TITLE);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.add(new Builder());
-		frame.pack();
-		frame.setLocationRelativeTo(null);
-		frame.getRootPane().setDefaultButton(findButton);
-		frame.setVisible(true);
+		
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				JFrame frame = new JFrame(TITLE);
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				frame.add(new Builder());
+				frame.pack();
+				frame.setLocationRelativeTo(null);
+				frame.getRootPane().setDefaultButton(findButton);
+				frame.setVisible(true);
+			}
+		});
 
 	}
 }

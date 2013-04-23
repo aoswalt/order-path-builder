@@ -1,10 +1,13 @@
 package com.angergames.orderpathbuilder;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 
 import javax.swing.JOptionPane;
@@ -18,15 +21,19 @@ import javax.swing.JTextField;
  */
 public class FileChecker {
 	
+	private File configFile = new File("cfg/paths.cfg");
+	
 	private HashMap<String, JTextField> fields;
 	private HashMap<String, String> paths = new HashMap<String, String>();
 	private BufferedReader reader;
 	
-	private String pathRoot;
+	private static String pathRoot;
 	private String patternSoldSeparately = "\\w+-SS";
 	private String patternPackage = "\\w+P\\d";
 	private String patternMinimum = "\\w+M";
 	private String patternLayers = "\\w+\\d";
+	
+	private String key;
 	
 	public FileChecker(HashMap<String, JTextField> fields) {
 		this.fields = fields;
@@ -34,11 +41,19 @@ public class FileChecker {
 	}
 	
 	/**
+	 * Makes path root available to outside classes.
+	 * @return The root portion of the paths.
+	 */
+	public static String getPathRoot() {
+		return pathRoot;
+	}
+	
+	/**
 	 * Load paths from the config file into the hashmap.
 	 */
 	private void loadPaths() {
 		try {
-			reader = new BufferedReader(new FileReader(new File("cfg/paths.cfg")));
+			reader = new BufferedReader(new FileReader(configFile));
 			String line = "";
 			String[] tokens;
 			
@@ -76,6 +91,15 @@ public class FileChecker {
 	public String findFile() {
 		String path = makePath();
 		if(path == null) {
+			String[] enteredPath;
+			
+			if((enteredPath = PathInput.showDialog(key)) != null) {
+				String newKey = enteredPath[0];
+				String newPath = enteredPath[1];
+				
+				paths.put(newKey, newPath);
+				writeConfigEntry(newKey, newPath);
+			}
 			return null;
 		} else {
 			path = pathRoot + path;
@@ -85,10 +109,9 @@ public class FileChecker {
 		
 		if(path != null) {
 			if(new File(path).exists()) {
+				System.out.println("File exists!");
 				return path;
 			} else {
-				//JOptionPane.showInputDialog("Enter path using variables: ");
-				// and to hashmap and save to config
 				return path;
 			}
 		} else {
@@ -102,7 +125,7 @@ public class FileChecker {
 	 * @return Path from config.
 	 */
 	private String makePath() {
-		String key = fields.get("item").getText().toUpperCase();
+		key = fields.get("item").getText().toUpperCase();
 		String out = "";
 		
 		if((out = paths.get(key)) != null) {
@@ -222,5 +245,21 @@ public class FileChecker {
 		}
 		
 		return path;
+	}
+	
+	/**
+	 * Write a new entry to the config file.
+	 * @param key The key to be added.
+	 * @param path The path to be added.
+	 */
+	private void writeConfigEntry(String key, String path) {
+		try {
+			PrintWriter print = new PrintWriter(new BufferedWriter(new FileWriter(configFile, true)));
+			print.print("\n" + key + "=" + path);
+			print.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
