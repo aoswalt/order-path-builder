@@ -26,12 +26,14 @@ public class Builder extends JPanel {
 	private static final String TITLE = "Path Builder";
 	
 	private HashMap<String, JTextField> fields = new HashMap<String, JTextField>();
+	private String[] orderData = new String[7];
 	private int fieldWidth = 8;
 	private static JButton findButton = new JButton("Find");
 	
-	private FileChecker checker = new FileChecker(fields);
+	private FileChecker checker;
 	
 	public Builder() {
+		checker = new FileChecker(true);
 		setupUI();
 	}
 	
@@ -46,7 +48,7 @@ public class Builder extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println(checker.findFile());
+				System.out.println(checker.findFile(copyFieldsToArray()));
 			}
 		});
 		
@@ -179,24 +181,55 @@ public class Builder extends JPanel {
 	}
 	
 	/**
+	 * Copy text from fields to the orderData array.
+	 * 
+	 * @return The orderData array.
+	 */
+	private String[] copyFieldsToArray() {
+		//ids for the array of order data
+		int item = 0;
+		int size = 1;
+		int spec = 2;
+		int word1 = 3;
+		int word2 = 4;
+		int word3 = 5;
+		int word4 = 6;
+		
+		orderData[item] = fields.get("item").getText();
+		orderData[size] = fields.get("size").getText();
+		orderData[spec] = fields.get("spec").getText();
+		orderData[word1] = fields.get("word1").getText();
+		orderData[word2] = fields.get("word2").getText();
+		orderData[word3] = fields.get("word3").getText();
+		orderData[word4] = fields.get("word4").getText();
+		
+		return orderData;
+	}
+	
+	/**
 	 * Program entry point.
 	 * 
 	 * @param args Not used.
 	 */
 	public static void main(String[] args) {
-		
-		EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				JFrame frame = new JFrame(TITLE);
-				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				frame.add(new Builder());
-				frame.pack();
-				frame.setLocationRelativeTo(null);
-				frame.getRootPane().setDefaultButton(findButton);
-				frame.setVisible(true);
-			}
-		});
-
+		if(args.length == 7) {	// if appropriate number of arguments, launch as commandline
+			FileChecker checker = new FileChecker(false);
+			System.out.println(checker.findFile(args));
+		} else if(args.length > 0 && args.length < 7) {	//if incorrect number of arguments, identify usage
+			System.out.println("Usage: builder [item size spec word1 word2 word3 word4]");
+		} else {	// by default, launch with gui
+			EventQueue.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					JFrame frame = new JFrame(TITLE);
+					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					frame.add(new Builder());
+					frame.pack();
+					frame.setLocationRelativeTo(null);
+					frame.getRootPane().setDefaultButton(findButton);
+					frame.setVisible(true);
+				}
+			});
+		}
 	}
 }

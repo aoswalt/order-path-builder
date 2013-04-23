@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
 /**
  * FileChecker.java
@@ -19,9 +18,11 @@ import javax.swing.JTextField;
  */
 public class FileChecker {
 	
+	private boolean isGUI;
+	
 	private File configFile = new File("cfg/paths.cfg");
 	
-	private HashMap<String, JTextField> fields;
+	private String[] orderData;
 	private HashMap<String, String> paths = new HashMap<String, String>();
 	private BufferedReader reader;
 	
@@ -33,8 +34,8 @@ public class FileChecker {
 	
 	private String key;
 	
-	public FileChecker(HashMap<String, JTextField> fields) {
-		this.fields = fields;
+	public FileChecker(boolean isGUI) {
+		this.isGUI = isGUI;
 		loadPaths();
 	}
 	
@@ -84,36 +85,37 @@ public class FileChecker {
 	/**
 	 * Attempt to build the path and find the file specified by the order.
 	 * 
+	 * @param An array of strings containing the order data.
 	 * @return The path to the file.
 	 */
-	public String findFile() {
+	public String findFile(String[] orderData) {
+		this.orderData = orderData;
+		
 		String path = makePath();
 		if(path == null) {
 			String[] enteredPath;
-			
-			if((enteredPath = PathInput.showDialog(key)) != null) {
-				String newKey = enteredPath[0];
-				String newPath = enteredPath[1];
-				
-				paths.put(newKey, newPath);
-				writeConfigEntry(newKey, newPath);
+			if(isGUI) {
+				if((enteredPath = PathInput.showDialog(key)) != null) {
+					String newKey = enteredPath[0];
+					String newPath = enteredPath[1];
+					
+					paths.put(newKey, newPath);
+					writeConfigEntry(newKey, newPath);
+				}
+			} else {
+				System.err.println("!ERROR: Path was not found for " + key);
 			}
 			return null;
 		} else {
 			path = pathRoot + path;
-		}
-		
-		path = replaceVars(path);
-		
-		if(path != null) {
+			path = replaceVars(path);
+
 			if(new File(path).exists()) {
-				System.out.println("File exists!");
+				//System.out.println("File exists!");
 				return path;
 			} else {
-				return path;
+				return "!WARNING: File not found at " + path;
 			}
-		} else {
-			return null;
 		}
 	}
 	
@@ -123,7 +125,7 @@ public class FileChecker {
 	 * @return Path from config.
 	 */
 	private String makePath() {
-		key = fields.get("item").getText().toUpperCase();
+		key = orderData[0].toUpperCase();
 		String out = "";
 		
 		if((out = paths.get(key)) != null) {
@@ -176,68 +178,77 @@ public class FileChecker {
 	 * @return The path with inserted values or null if a required field is empty.
 	 */
 	private String replaceVars(String path) {
-		// $size, $spec, $word1, $word2, $word3, $word4, $ay
+		// variables = $size, $spec, $word1, $word2, $word3, $word4, $ay
+		
+		//ids for the array of order data
+		//int item = 0;
+		int size = 1;
+		int spec = 2;
+		int word1 = 3;
+		int word2 = 4;
+		int word3 = 5;
+		int word4 = 6;
 		
 		//test path for each variable and check if field is empty
 		if(path.contains("$size")) {
-			if(!fields.get("size").getText().equals("")) {
-				path = path.replace("$size", Integer.parseInt(fields.get("size").getText()) + "");
+			if(!orderData[size].equals("")) {
+				path = path.replace("$size", Integer.parseInt(orderData[size]) + "");
 			} else {
-				JOptionPane.showMessageDialog(null, "Size was empty.", "Empty Field", JOptionPane.ERROR_MESSAGE);
+				showError("Size was empty.");
 				return null;
 			}
 		}
 		
 		if(path.contains("$spec")) {
-			if(!fields.get("spec").getText().equals("")) {
-				path = path.replace("$spec", String.format("%.1f", Double.parseDouble(fields.get("spec").getText())));
+			if(!orderData[spec].equals("")) {
+				path = path.replace("$spec", String.format("%.1f", Double.parseDouble(orderData[spec])));
 			} else {
-				JOptionPane.showMessageDialog(null, "Spec was empty.", "Empty Field", JOptionPane.ERROR_MESSAGE);
+				showError("Spec was empty.");
 				return null;
 			}
 		}
 		
 		if(path.contains("$word1")) {
-			if(!fields.get("word1").getText().equals("")) {
-				path = path.replace("$word1", fields.get("word1").getText().toUpperCase());
+			if(!orderData[word1].equals("")) {
+				path = path.replace("$word1", orderData[word1].toUpperCase());
 			} else {
-				JOptionPane.showMessageDialog(null, "Word1 was empty.", "Empty Field", JOptionPane.ERROR_MESSAGE);
+				showError("Word1 was empty.");
 				return null;
 			}
 		}
 		
 		if(path.contains("$word2")) {
-			if(!fields.get("word2").getText().equals("")) {
-				path = path.replace("$word2", fields.get("word2").getText().toUpperCase());
+			if(!orderData[word2].equals("")) {
+				path = path.replace("$word2", orderData[word2].toUpperCase());
 			} else {
-				JOptionPane.showMessageDialog(null, "Word2 was empty.", "Empty Field", JOptionPane.ERROR_MESSAGE);
+				showError("Word2 was empty.");
 				return null;
 			}
 		}
 		
 		if(path.contains("$word3")) {
-			if(!fields.get("word3").getText().equals("")) {
-				path = path.replace("$word3", fields.get("word3").getText().toUpperCase());
+			if(!orderData[word3].equals("")) {
+				path = path.replace("$word3", orderData[word3].toUpperCase());
 			} else {
-				JOptionPane.showMessageDialog(null, "Word3 was empty.", "Empty Field", JOptionPane.ERROR_MESSAGE);
+				showError("Word3 was empty.");
 				return null;
 			}
 		}
 		
 		if(path.contains("$word4")) {
-			if(!fields.get("word4").getText().equals("")) {
-				path = path.replace("$word4", fields.get("word4").getText().toUpperCase());
+			if(!orderData[word4].equals("")) {
+				path = path.replace("$word4", orderData[word4].toUpperCase());
 			} else {
-				JOptionPane.showMessageDialog(null, "Word4 was empty.", "Empty Field", JOptionPane.ERROR_MESSAGE);
+				showError("Word4 was empty.");
 				return null;
 			}
 		}
 		
 		if(path.contains("$ay")) {
-			if(!fields.get("$ay").getText().equals("")) {
-				path = path.replace("$ay", Double.parseDouble(fields.get("spec").getText()) >= 10 ? "ADULT" : "YOUTH");
+			if(!orderData[spec].equals("")) {
+				path = path.replace("$ay", Double.parseDouble(orderData[spec]) >= 10 ? "ADULT" : "YOUTH");
 			} else {
-				JOptionPane.showMessageDialog(null, "Spec was empty.", "Empty Field", JOptionPane.ERROR_MESSAGE);
+				showError("Spec was empty.");
 				return null;
 			}
 		}
@@ -246,7 +257,21 @@ public class FileChecker {
 	}
 	
 	/**
+	 * Display an error message. System out if not GUI, JOptionPane if is GUI.
+	 * 
+	 * @param message The message to display.
+	 */
+	private void showError(String message) {
+		if(isGUI) {
+			JOptionPane.showMessageDialog(null, message, "Empty Field", JOptionPane.ERROR_MESSAGE);
+		} else {
+			System.err.println("!ERROR: " + message);
+		}
+	}
+	
+	/**
 	 * Write a new entry to the config file.
+	 * 
 	 * @param key The key to be added.
 	 * @param path The path to be added.
 	 */
