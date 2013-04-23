@@ -52,6 +52,11 @@ public class FileChecker {
 	 */
 	private void loadPaths() {
 		try {
+			if(!configFile.exists()) {
+				Builder.closeWithError();
+				return;
+			}
+			
 			reader = new BufferedReader(new FileReader(configFile));
 			String line = "";
 			String[] tokens;
@@ -74,10 +79,12 @@ public class FileChecker {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				reader.close();
-			} catch (IOException e) {
-				e.printStackTrace();
+			if(reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

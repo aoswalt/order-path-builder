@@ -11,6 +11,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -231,5 +232,11 @@ public class Builder extends JPanel {
 				}
 			});
 		}
+	}
+	
+	public static void closeWithError() {
+		System.err.println("!ERROR: cfg/paths.cfg not found.");
+		JOptionPane.showMessageDialog(null, "Config file not found.", "Missing Config", JOptionPane.ERROR_MESSAGE);
+		System.exit(1);
 	}
 }
