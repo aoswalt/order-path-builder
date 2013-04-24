@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
@@ -48,8 +49,11 @@ public class Builder extends JPanel {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				System.out.println(checker.findFile(copyFieldsToArray()));
+			public void actionPerformed(ActionEvent e) {
+				String result = checker.findFile(copyFieldsToArray());
+				if(result != null) {
+					JOptionPane.showMessageDialog(null, new JTextArea(result), "Path", JOptionPane.PLAIN_MESSAGE);
+				}
 			}
 		});
 		
@@ -132,21 +136,6 @@ public class Builder extends JPanel {
 		c.weightx = 0;
 		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.EAST;
-		c.gridx = 0;
-		c.gridy = 4;
-		this.add(label, c);
-		field = new JTextField(fieldWidth);
-		c.weightx = 0.5;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.anchor = GridBagConstraints.WEST;
-		c.gridx = 1;
-		this.add(field, c);
-		fields.put("word2", field);
-
-		label = new JLabel("Word3:");
-		c.weightx = 0;
-		c.fill = GridBagConstraints.NONE;
-		c.anchor = GridBagConstraints.EAST;
 		c.gridx = 2;
 		c.gridy = 3;
 		this.add(label, c);
@@ -155,6 +144,21 @@ public class Builder extends JPanel {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 3;
+		this.add(field, c);
+		fields.put("word2", field);
+
+		label = new JLabel("Word3:");
+		c.weightx = 0;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.EAST;
+		c.gridx = 0;
+		c.gridy = 4;
+		this.add(label, c);
+		field = new JTextField(fieldWidth);
+		c.weightx = 0.5;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.WEST;
+		c.gridx = 1;
 		this.add(field, c);
 		fields.put("word3", field);
 

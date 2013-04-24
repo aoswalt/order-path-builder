@@ -115,7 +115,11 @@ public class FileChecker {
 			return null;
 		} else {
 			path = pathRoot + path;
-			path = replaceVars(path);
+			
+			//if a required field is empty, do not attempt to find a file
+			if((path = replaceVars(path)) == null) {
+				return null;
+			}
 
 			if(new File(path).exists()) {
 				//System.out.println("File exists!");

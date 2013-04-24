@@ -8,6 +8,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 
 /**
  * PathInput.java
@@ -86,6 +88,20 @@ public class PathInput extends JPanel {
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = GridBagConstraints.RELATIVE;
 		panel.add(pathField, c);
+		
+		// request focus on pathField when the dialog is shown
+		pathField.addAncestorListener(new AncestorListener() {
+			@Override
+			public void ancestorAdded(AncestorEvent event) {
+				event.getComponent().requestFocusInWindow();
+			}
+
+			@Override
+			public void ancestorRemoved(AncestorEvent event) {}
+
+			@Override
+			public void ancestorMoved(AncestorEvent event) {}
+		});
 		
 		return panel;
 	}
