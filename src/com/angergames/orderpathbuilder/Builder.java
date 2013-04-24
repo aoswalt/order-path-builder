@@ -219,7 +219,11 @@ public class Builder extends JPanel {
 	public static void main(String[] args) {
 		if(args.length == 7) {	// if appropriate number of arguments, launch as commandline
 			FileChecker checker = new FileChecker(false);
-			System.out.println(checker.findFile(args));
+			
+			String result = checker.findFile(args);
+			if(result != null) {
+				System.out.println(result);
+			}
 		} else if(args.length > 0 && args.length < 7) {	//if incorrect number of arguments, identify usage
 			System.out.println("!Usage: builder [item size spec word1 word2 word3 word4]");
 		} else {	// by default, launch with gui
