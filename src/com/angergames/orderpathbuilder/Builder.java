@@ -221,7 +221,7 @@ public class Builder extends JPanel {
 			FileChecker checker = new FileChecker(false);
 			System.out.println(checker.findFile(args));
 		} else if(args.length > 0 && args.length < 7) {	//if incorrect number of arguments, identify usage
-			System.out.println("Usage: builder [item size spec word1 word2 word3 word4]");
+			System.out.println("!Usage: builder [item size spec word1 word2 word3 word4]");
 		} else {	// by default, launch with gui
 			EventQueue.invokeLater(new Runnable() {
 				@Override
