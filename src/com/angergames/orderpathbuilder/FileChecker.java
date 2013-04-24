@@ -30,6 +30,7 @@ public class FileChecker {
 	private String patternSoldSeparately = "\\w+-SS";
 	private String patternPackage = "\\w+P\\d";
 	private String patternMinimum = "\\w+M";
+	private String patternOuterwear = "\\w+OW";
 	private String patternLayers = "\\w+\\d";
 	
 	private String key;
@@ -163,6 +164,15 @@ public class FileChecker {
 		
 		// try to remove minimum designation
 		if(key.matches(patternMinimum)) {
+			key = key.substring(0, key.length() - 1);
+			
+			if((out = paths.get(key)) != null) {
+				return out;
+			}
+		}
+
+		// try to remove outerwear designation
+		if(key.matches(patternOuterwear)) {
 			key = key.substring(0, key.length() - 1);
 			
 			if((out = paths.get(key)) != null) {
