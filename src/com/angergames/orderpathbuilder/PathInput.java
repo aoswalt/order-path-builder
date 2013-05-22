@@ -83,7 +83,7 @@ public class PathInput extends JPanel {
 		panel.add(new JLabel("Path: "), c);
 		c.anchor = GridBagConstraints.EAST;
 		c.gridx = GridBagConstraints.RELATIVE;
-		panel.add(new JLabel(FileChecker.getPathRoot()), c);
+		panel.add(new JLabel(ConfigLoader.getPathRoot()), c);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = GridBagConstraints.RELATIVE;

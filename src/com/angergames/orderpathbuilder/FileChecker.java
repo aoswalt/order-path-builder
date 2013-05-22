@@ -1,14 +1,11 @@
 package com.angergames.orderpathbuilder;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
 
 import javax.swing.JOptionPane;
+
+import com.angergames.orderpathbuilder.ConfigLoader.Trim;
 
 /**
  * FileChecker.java
@@ -20,74 +17,17 @@ public class FileChecker {
 	
 	private boolean isGUI;
 	
-	private File configFile = new File("cfg/paths.cfg");
+	private ConfigLoader config = new ConfigLoader();
+	private String pathRoot = ConfigLoader.getPathRoot();
+	private HashMap<String, String> paths;
 	
 	private String[] orderData;
-	private HashMap<String, String> paths = new HashMap<String, String>();
-	private BufferedReader reader;
-	
-	private static String pathRoot;
-	private String patternSoldSeparately = "\\w+-SS";
-	private String patternPackage = "\\w+P\\d";
-	private String patternMinimum = "\\w+M";
-	private String patternOuterwear = "\\w+OW";
-	private String patternLayers = "\\w+\\d";
-	
 	private String key;
 	
 	public FileChecker(boolean isGUI) {
 		this.isGUI = isGUI;
-		loadPaths();
-	}
-	
-	/**
-	 * Makes path root available to outside classes.
-	 * @return The root portion of the paths.
-	 */
-	public static String getPathRoot() {
-		return pathRoot;
-	}
-	
-	/**
-	 * Load paths from the config file into the hashmap.
-	 */
-	private void loadPaths() {
-		try {
-			if(!configFile.exists()) {
-				Builder.closeWithError();
-				return;
-			}
-			
-			reader = new BufferedReader(new FileReader(configFile));
-			String line = "";
-			String[] tokens;
-			
-			while((line = reader.readLine()) != null) {
-				if(line.startsWith("#") || line.length() == 0) continue;
-				tokens = line.split("=");
-				
-				if(tokens[0].equals("root")) {
-					pathRoot = tokens[1];
-					continue;
-				}
-				
-				paths.put(tokens[0], tokens[1]);
-			}
-			
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if(reader != null) {
-				try {
-					reader.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+		
+		paths = config.getPaths();
 	}
 	
 	/**
@@ -108,7 +48,7 @@ public class FileChecker {
 					String newPath = enteredPath[1];
 					
 					paths.put(newKey, newPath);
-					writeConfigEntry(newKey, newPath);
+					config.writeConfigEntry(newKey, newPath);
 				}
 			} else {
 				System.err.println("!ERROR: Path was not found for " + key);
@@ -132,7 +72,7 @@ public class FileChecker {
 	}
 	
 	/**
-	 * Attempt to pull a path from the config and remove modifiers if it fails.
+	 * Attempt to pull a path from the config and remove pricing additions if it fails.
 	 * 
 	 * @return Path from config.
 	 */
@@ -144,48 +84,14 @@ public class FileChecker {
 			return out;
 		}
 		
-		// try to remove sold separately designation
-		if(key.matches(patternSoldSeparately)) {
-			key = key.substring(0, key.length() - 3);
-			
-			if((out = paths.get(key)) != null) {
-				return out;
-			}
-		}
-		
-		// try to remove package designation
-		if(key.matches(patternPackage)) {
-			key = key.substring(0, key.length() - 2);
-			
-			if((out = paths.get(key)) != null) {
-				return out;
-			}
-		}
-		
-		// try to remove minimum designation
-		if(key.matches(patternMinimum)) {
-			key = key.substring(0, key.length() - 1);
-			
-			if((out = paths.get(key)) != null) {
-				return out;
-			}
-		}
-
-		// try to remove outerwear designation
-		if(key.matches(patternOuterwear)) {
-			key = key.substring(0, key.length() - 1);
-			
-			if((out = paths.get(key)) != null) {
-				return out;
-			}
-		}
-		
-		// remove layer count designation
-		if(key.matches(patternLayers)) {
-			key = key.substring(0, key.length() - 1);
-			
-			if((out = paths.get(key)) != null) {
-				return out;
+		// try removing pricing additions and check for a path each time
+		for(Trim trim: config.getTrims()) {
+			if(key.matches(trim.pattern)) {
+				key = key.substring(0, key.length() - trim.length);
+				
+				if((out = paths.get(key)) != null) {
+					return out;
+				}
 			}
 		}
 		
@@ -287,23 +193,6 @@ public class FileChecker {
 			JOptionPane.showMessageDialog(null, message, "Empty Field", JOptionPane.ERROR_MESSAGE);
 		} else {
 			System.err.println("!ERROR: " + message);
-		}
-	}
-	
-	/**
-	 * Write a new entry to the config file.
-	 * 
-	 * @param key The key to be added.
-	 * @param path The path to be added.
-	 */
-	private void writeConfigEntry(String key, String path) {
-		try {
-			FileWriter writer = new FileWriter(configFile, true);
-			writer.write("\n" + key + "=" + path);
-			writer.close();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 }
