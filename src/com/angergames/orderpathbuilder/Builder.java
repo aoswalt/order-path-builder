@@ -246,7 +246,7 @@ public class Builder extends JPanel {
 	 * Show error message for config file not found and exit the program.
 	 */
 	public static void closeWithError() {
-		System.err.println("!ERROR: cfg/paths.cfg not found.");
+		System.err.println("!ERROR: Config file(s) not found.");
 		JOptionPane.showMessageDialog(null, "Config file not found.", "Missing Config", JOptionPane.ERROR_MESSAGE);
 		System.exit(1);
 	}
